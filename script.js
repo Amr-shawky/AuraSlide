@@ -51,14 +51,12 @@ function renderSlidesList() {
             </div>
         `;
         
-        // Button Listeners
         const duplicateBtn = el.querySelector('.duplicate');
         const deleteBtn = el.querySelector('.delete');
 
         duplicateBtn.addEventListener('click', (e) => duplicateSlide(index, e));
         deleteBtn.addEventListener('click', (e) => deleteSlide(index, e));
 
-        // Selection
         el.onclick = (e) => {
             if (!e.target.classList.contains('icon-btn')) {
                 currentSlideIndex = index;
@@ -98,7 +96,7 @@ function updateSlideData() {
 
 // ===== SYSTEM SETTINGS UPDATE =====
 function updateSystemSettings() {
-    // 1. Get Values from inputs
+    // 1. Get Values
     config.accent = document.getElementById('cfgAccent').value;
     config.bgOuter = document.getElementById('cfgBg').value;
     config.bgInner = document.getElementById('cfgCardBg').value;
@@ -109,16 +107,15 @@ function updateSystemSettings() {
     config.width = w;
     config.height = h;
 
-    // 3. Apply to CSS Variables for Preview
+    // 3. Apply to CSS Variables in Preview
     const r = document.documentElement.style;
     r.setProperty('--preview-accent', config.accent);
     r.setProperty('--preview-bg-outer', config.bgOuter);
     r.setProperty('--preview-bg-inner', config.bgInner);
-    r.setProperty('--accent-primary', config.accent); // Also update UI accent
+    r.setProperty('--accent-primary', config.accent); 
     r.setProperty('--accent-glow', config.accent);
 
     // 4. Apply Aspect Ratio to Preview Wrapper
-    // We calculate ratio using simple math for CSS
     document.getElementById('previewWrapper').style.aspectRatio = `${w} / ${h}`;
     
     // 5. Update Borders
@@ -185,26 +182,52 @@ function deleteSlide(index, event) {
     }
 }
 
-// ===== TOOLBAR HELPERS =====
-function insertTag(type) {
+// ===== TOOLBAR HELPERS & IMAGE UPLOAD =====
+
+// Helper to insert text at cursor position
+function insertContent(text) {
     const textarea = document.getElementById('inpContent');
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const val = textarea.value;
+    textarea.value = val.substring(0, start) + text + val.substring(end);
+    updateSlideData();
+    textarea.focus();
+}
+
+function insertTag(type) {
     let tag = "";
-    
     switch(type) {
         case 'h2': tag = "<h2>Subheading</h2>\n"; break;
         case 'p': tag = "<p>Text content goes here.</p>\n"; break;
         case 'ul': tag = "<ul>\n  <li>Item 1</li>\n  <li>Item 2</li>\n</ul>\n"; break;
         case 'code': tag = "<div class='code-block'>System.out.println('Hello');</div>\n"; break;
-        case 'img': tag = "<img src='https://via.placeholder.com/800x400/2a0050/ffffff?text=IMAGE' alt='Desc'>\n"; break;
         case 'hr': tag = "<hr>\n"; break;
     }
+    insertContent(tag);
+}
 
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    textarea.value = text.substring(0, start) + tag + text.substring(end);
-    updateSlideData();
-    textarea.focus();
+// --- IMAGE UPLOAD LOGIC ---
+function triggerImageUpload() {
+    document.getElementById('imgUpload').click();
+}
+
+function handleImageUpload(input) {
+    const file = input.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // Convert file to Base64 String
+            const base64Img = e.target.result;
+            // Create the IMG tag with style to prevent overflow
+            const imgTag = `<img src="${base64Img}" alt="Uploaded Image" style="max-width: 100%;">\n`;
+            insertContent(imgTag);
+            showToast("Image Uploaded");
+        };
+        reader.readAsDataURL(file);
+    }
+    // Reset input so same file can be selected again
+    input.value = ''; 
 }
 
 function showToast(msg) {
@@ -263,7 +286,6 @@ function generateAndExport() {
         .slide {
             width: 90vw; 
             max-width: ${config.width}px;
-            /* DYNAMIC ASPECT RATIO */
             aspect-ratio: ${config.width} / ${config.height};
             
             background: var(--bg-inner);
@@ -289,41 +311,40 @@ function generateAndExport() {
         .code-block { background: #000; border: 1px solid #333; border-left: 4px solid #00b4d8; padding: 20px; font-family: monospace; color: #0f0; margin: 20px 0; font-size: 1.1rem; }
         img { max-width: 100%; border: 1px solid var(--accent); box-shadow: 0 0 15px rgba(0,0,0,0.5); }
 
-        /* --- CONTROLS --- */
+        /* --- CONTROLS & UI --- */
         .controls-overlay {
             position: fixed; bottom: 30px; width: 100%;
-            display: flex; justify-content: center; align-items: center; gap: 30px;
+            display: flex; justify-content: center; align-items: center; gap: 20px;
             z-index: 100; pointer-events: none;
         }
         .control-panel {
             background: rgba(0,0,0,0.8); border: 1px solid #333;
             padding: 10px 20px; border-radius: 50px;
-            pointer-events: auto; display: flex; gap: 15px;
+            pointer-events: auto; display: flex; align-items: center; gap: 12px;
             box-shadow: 0 0 15px var(--accent);
         }
         .btn {
             background: transparent; border: none; color: #888;
             font-size: 18px; cursor: pointer; transition: 0.2s;
-            width: 40px; height: 40px; border-radius: 50%;
+            width: 36px; height: 36px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
         }
         .btn:hover { color: #fff; background: rgba(255,255,255,0.1); text-shadow: 0 0 5px #fff; }
         
         .btn.active-tool { color: var(--accent); text-shadow: 0 0 8px var(--accent); background: rgba(255, 255, 255, 0.1); }
-        .btn.active-pen { color: #ff0055; text-shadow: 0 0 8px #ff0055; background: rgba(255, 0, 85, 0.1); }
-        .btn.active-marker { color: #FFFF00; text-shadow: 0 0 8px #FFFF00; background: rgba(255, 255, 0, 0.1); }
+        .btn.active-pen { color: white; background: rgba(255, 0, 85, 0.5); }
+        .btn.active-marker { color: black; background: rgba(255, 255, 0, 0.8); }
 
         .page-counter { color: var(--accent); font-weight: bold; font-size: 18px; font-family: monospace; }
         
-        /* LASER DOT */
-        .laser-dot {
-            width: 12px; height: 12px; background: #ff0055;
-            border-radius: 50%; position: absolute; pointer-events: none;
-            box-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055;
-            display: none; z-index: 9999;
+        /* Tool Color Pickers in Bar */
+        .tool-color {
+            width: 25px; height: 25px; border: 2px solid #555; 
+            border-radius: 50%; padding: 0; background: none; cursor: pointer;
+            overflow: hidden;
         }
 
-        /* --- RIGHT SIDE MENU (NEW FEATURE) --- */
+        /* RIGHT MENU */
         .menu-toggle {
             position: fixed; top: 30px; right: 30px; z-index: 1001;
             background: rgba(0,0,0,0.8); border: 1px solid var(--accent);
@@ -346,6 +367,14 @@ function generateAndExport() {
         }
         .menu-item:hover { border-color: var(--accent); color: white; transform: translateX(-5px); }
         .menu-item.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        /* LASER DOT */
+        .laser-dot {
+            width: 12px; height: 12px; background: #ff0055;
+            border-radius: 50%; position: absolute; pointer-events: none;
+            box-shadow: 0 0 10px #ff0055, 0 0 20px #ff0055;
+            display: none; z-index: 9999;
+        }
 
     </style>
 </head>
@@ -373,8 +402,13 @@ function generateAndExport() {
         
         <div class="control-panel">
             <button class="btn" id="btnLaser" onclick="toggleTool('laser')"><i class="fas fa-crosshairs"></i></button>
+            
             <button class="btn" id="btnPen" onclick="toggleTool('pen')"><i class="fas fa-pen"></i></button>
+            <input type="color" id="penColor" class="tool-color" value="#ff0055" title="Pen Color">
+            
             <button class="btn" id="btnMarker" onclick="toggleTool('marker')"><i class="fas fa-highlighter"></i></button>
+            <input type="color" id="markerColor" class="tool-color" value="#FFFF00" title="Marker Color">
+            
             <button class="btn" onclick="clearCanvas()"><i class="fas fa-eraser"></i></button>
             <button class="btn" onclick="toggleFull()"><i class="fas fa-expand"></i></button>
         </div>
@@ -384,7 +418,7 @@ function generateAndExport() {
         const slides = ${slidesJson};
         let curr = 0;
         
-        // Setup Slides
+        // Setup
         const container = document.getElementById('slideContainer');
         slides.forEach((s, i) => {
             const div = document.createElement('div');
@@ -393,7 +427,7 @@ function generateAndExport() {
             container.appendChild(div);
         });
         
-        // Setup Menu
+        // Menu Setup
         const menuList = document.getElementById('menuList');
         function buildMenu() {
             menuList.innerHTML = '';
@@ -407,23 +441,21 @@ function generateAndExport() {
         }
         buildMenu();
 
-        function toggleMenu() {
-            document.getElementById('sideMenu').classList.toggle('open');
-        }
+        function toggleMenu() { document.getElementById('sideMenu').classList.toggle('open'); }
 
         function updateUI() {
             document.getElementById('pgNum').innerText = (curr+1) + '/' + slides.length;
             document.querySelectorAll('.slide').forEach((s,i) => {
                 s.className = 'slide' + (i===curr?' active':'');
             });
-            buildMenu(); // refresh active state in menu
+            buildMenu();
         }
 
         function nextSlide() { if(curr < slides.length-1) { curr++; updateUI(); clearCanvas(); } }
         function prevSlide() { if(curr > 0) { curr--; updateUI(); clearCanvas(); } }
         function toggleFull() { if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
 
-        // --- TOOLS LOGIC ---
+        // --- DRAWING LOGIC ---
         const canvas = document.getElementById('drawingCanvas');
         const ctx = canvas.getContext('2d');
         let drawing = false;
@@ -447,7 +479,7 @@ function generateAndExport() {
         }
 
         function updateButtonStates() {
-            document.querySelectorAll('.btn').forEach(b => b.className = 'btn');
+            document.querySelectorAll('.btn').forEach(b => b.classList.remove('active-tool', 'active-pen', 'active-marker'));
             if (activeTool === 'laser') document.getElementById('btnLaser').classList.add('active-tool');
             if (activeTool === 'pen') document.getElementById('btnPen').classList.add('active-pen');
             if (activeTool === 'marker') document.getElementById('btnMarker').classList.add('active-marker');
@@ -462,18 +494,24 @@ function generateAndExport() {
                 ctx.beginPath(); 
                 ctx.moveTo(e.clientX, e.clientY); 
                 
+                const penColor = document.getElementById('penColor').value;
+                const markerColor = document.getElementById('markerColor').value;
+
                 if (activeTool === 'pen') {
                     ctx.globalCompositeOperation = 'source-over';
-                    ctx.strokeStyle = '#ff0055'; 
+                    ctx.strokeStyle = penColor; 
                     ctx.lineWidth = 4;
                     ctx.shadowBlur = 0;
                     ctx.globalAlpha = 1;
                 } else if (activeTool === 'marker') {
-                    ctx.globalCompositeOperation = 'multiply';
-                    ctx.strokeStyle = '#FFFF00'; 
-                    ctx.lineWidth = 20; 
-                    ctx.shadowBlur = 0;
-                    ctx.globalAlpha = 0.5;
+                    // IMPORTANT: Using SCREEN mode creates a neon glow effect 
+                    // that highlights dark backgrounds without covering text.
+                    ctx.globalCompositeOperation = 'screen'; 
+                    ctx.strokeStyle = markerColor; 
+                    ctx.lineWidth = 25; 
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = markerColor;
+                    ctx.globalAlpha = 0.5; // Transparency
                 }
             } 
         });

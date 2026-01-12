@@ -30,6 +30,8 @@
 
     <aside class="sidebar-right">
         
+        <input type="file" id="imgUpload" accept="image/*" style="display: none;" onchange="handleImageUpload(this)">
+
         <div class="section-title">SLIDE PROPERTIES</div>
 
         <div class="form-group">
@@ -45,7 +47,7 @@
             <button class="tool-btn" onclick="insertTag('p')"><i class="fas fa-paragraph"></i> Text</button>
             <button class="tool-btn" onclick="insertTag('ul')"><i class="fas fa-list"></i> List</button>
             <button class="tool-btn" onclick="insertTag('code')"><i class="fas fa-code"></i> Code</button>
-            <button class="tool-btn" onclick="insertTag('img')"><i class="fas fa-image"></i> Img</button>
+            <button class="tool-btn" onclick="triggerImageUpload()"><i class="fas fa-image"></i> Upload</button>
             <button class="tool-btn" onclick="insertTag('hr')"><i class="fas fa-minus"></i> Line</button>
         </div>
 
