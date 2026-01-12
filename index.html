@@ -11,7 +11,7 @@
 
     <aside class="sidebar-left">
         <div class="panel-header">
-            <span><i class="fas fa-layer-group"></i> SLIDE DECK</span>
+            <span><i class="fas fa-layer-group"></i> QUEST LOG</span>
             <span class="system-badge" id="slide-count-badge">1</span>
         </div>
         <div class="slides-container" id="slidesList">
@@ -22,13 +22,14 @@
     </aside>
 
     <main class="preview-stage">
-        <div class="system-status">STATUS: EDITING</div>
+        <div class="system-status">STATUS: EDITING // PREVIEW MODE</div>
         <div id="previewWrapper" class="preview-wrapper">
             <div id="previewCard" class="route-card"></div>
         </div>
     </main>
 
     <aside class="sidebar-right">
+        
         <div class="section-title">SLIDE PROPERTIES</div>
 
         <div class="form-group">
@@ -58,22 +59,27 @@
         <div class="section-title" style="color: #fff; margin-top: 10px;">SYSTEM CONFIGURATION</div>
         
         <div class="form-group">
-            <label>THEME COLOR (ACCENT)</label>
+            <label>THEME ACCENT COLOR</label>
             <input type="color" id="cfgAccent" class="input-color" value="#7b2cbf" onchange="updateSystemSettings()">
         </div>
 
-        <div class="form-group">
-            <label>BACKGROUND COLOR</label>
-            <input type="color" id="cfgBg" class="input-color" value="#0b0c15" onchange="updateSystemSettings()">
+        <div class="form-group two-col">
+            <div>
+                <label>OUTER BG COLOR</label>
+                <input type="color" id="cfgBg" class="input-color" value="#0b0c15" onchange="updateSystemSettings()">
+            </div>
+            <div>
+                <label>INNER CARD BG</label>
+                <input type="color" id="cfgCardBg" class="input-color" value="#121420" onchange="updateSystemSettings()">
+            </div>
         </div>
 
         <div class="form-group">
-            <label>SLIDE SIZE (RATIO)</label>
-            <select id="cfgRatio" class="input-system" onchange="updateSystemSettings()">
-                <option value="16/9">16:9 (Widescreen)</option>
-                <option value="4/3">4:3 (Standard)</option>
-                <option value="1/1">1:1 (Social)</option>
-            </select>
+            <label>RESOLUTION (Width x Height)</label>
+            <div class="two-col">
+                <input type="number" id="cfgW" class="input-system" value="1920" placeholder="W" onchange="updateSystemSettings()">
+                <input type="number" id="cfgH" class="input-system" value="1080" placeholder="H" onchange="updateSystemSettings()">
+            </div>
         </div>
 
         <div class="export-section">
