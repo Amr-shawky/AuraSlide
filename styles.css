@@ -1,5 +1,5 @@
 :root {
-    /* SOLO LEVELING PALETTE */
+    /* SOLO LEVELING PALETTE - VARIABLES */
     --bg-dark: #0b0c15;       /* Deepest Black/Blue */
     --bg-panel: #121420;      /* Sidebar Background */
     --bg-card: #1a1c29;       /* Input/Card Background */
@@ -12,7 +12,6 @@
     --text-muted: #8b8b9e;
     
     --border-color: #2d2d3a;
-    --glow-strength: 0 0 10px rgba(123, 44, 191, 0.4);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; outline: none; font-family: 'Segoe UI', 'Roboto', sans-serif; }
@@ -113,16 +112,25 @@ body {
     opacity: 0.7; pointer-events: none;
 }
 
+/* New Wrapper to handle Aspect Ratio in Preview */
+.preview-wrapper {
+    width: 100%;
+    max-width: 960px;
+    aspect-ratio: 16/9; /* Default, will be changed by JS */
+    position: relative;
+    box-shadow: 0 0 50px rgba(0,0,0,0.5);
+    transition: 0.3s;
+}
+
 .route-card {
-    width: 100%; max-width: 960px; aspect-ratio: 16/9;
+    width: 100%; 
+    height: 100%;
     background: rgba(18, 20, 32, 0.95);
     border: 1px solid var(--accent-primary);
-    box-shadow: 0 0 30px rgba(0,0,0,0.8), 0 0 15px rgba(123, 44, 191, 0.2);
     padding: 60px;
     color: var(--text-main);
     overflow-y: auto;
     border-radius: 2px;
-    position: relative;
 }
 
 /* Content inside Preview */
@@ -135,7 +143,7 @@ body {
 .route-card img { max-width: 100%; border: 1px solid var(--accent-primary); box-shadow: 0 0 10px rgba(0,0,0,0.5); }
 
 /* === RIGHT PANEL (EDITOR) === */
-.sidebar-right { padding: 20px; gap: 15px; }
+.sidebar-right { padding: 20px; gap: 15px; overflow-y: auto; }
 .section-title { font-size: 11px; color: var(--accent-primary); letter-spacing: 1px; font-weight: 700; margin-bottom: 5px; }
 .divider { height: 1px; background: #222; margin: 5px 0; }
 
@@ -148,6 +156,16 @@ body {
 .input-system:focus { border-color: var(--accent-primary); box-shadow: 0 0 8px rgba(123, 44, 191, 0.3); }
 textarea.input-system { min-height: 100px; resize: vertical; font-family: monospace; }
 textarea.small { min-height: 60px; color: #666; }
+
+/* New Color Picker Input */
+.input-color {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #333;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+}
 
 .toolbar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 10px; }
 .tool-btn {

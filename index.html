@@ -23,8 +23,9 @@
 
     <main class="preview-stage">
         <div class="system-status">STATUS: EDITING</div>
-        <div id="previewCard" class="route-card">
-            </div>
+        <div id="previewWrapper" class="preview-wrapper">
+            <div id="previewCard" class="route-card"></div>
+        </div>
     </main>
 
     <aside class="sidebar-right">
@@ -52,9 +53,27 @@
             <textarea id="inpContent" class="input-system" placeholder="Editor content..." oninput="updateSlideData()"></textarea>
         </div>
 
+        <div class="divider"></div>
+
+        <div class="section-title" style="color: #fff; margin-top: 10px;">SYSTEM CONFIGURATION</div>
+        
         <div class="form-group">
-            <label>HIDDEN LOGS (NOTES)</label>
-            <textarea id="inpNotes" class="input-system small" placeholder="Speaker notes..." oninput="updateSlideData()"></textarea>
+            <label>THEME COLOR (ACCENT)</label>
+            <input type="color" id="cfgAccent" class="input-color" value="#7b2cbf" onchange="updateSystemSettings()">
+        </div>
+
+        <div class="form-group">
+            <label>BACKGROUND COLOR</label>
+            <input type="color" id="cfgBg" class="input-color" value="#0b0c15" onchange="updateSystemSettings()">
+        </div>
+
+        <div class="form-group">
+            <label>SLIDE SIZE (RATIO)</label>
+            <select id="cfgRatio" class="input-system" onchange="updateSystemSettings()">
+                <option value="16/9">16:9 (Widescreen)</option>
+                <option value="4/3">4:3 (Standard)</option>
+                <option value="1/1">1:1 (Social)</option>
+            </select>
         </div>
 
         <div class="export-section">
