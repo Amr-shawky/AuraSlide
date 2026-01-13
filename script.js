@@ -281,11 +281,11 @@ function generateAndExport() {
         body.mode-marker #drawingCanvas { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10" fill="yellow" opacity="0.5"/></svg>') 10 10, auto; }
         body.laser-active { cursor: none; }
 
-        /* --- SLIDE CARD (FIXED SCROLLING) --- */
+        /* --- SLIDE CARD --- */
         .slide {
             width: 90vw; 
             max-width: ${config.width}px;
-            /* Ensure slide fits on screen even if aspect ratio is tall */
+            /* Ensure slide fits on screen vertically */
             max-height: 95vh;
             aspect-ratio: ${config.width} / ${config.height};
             
@@ -294,22 +294,21 @@ function generateAndExport() {
             box-shadow: 0 0 50px rgba(0,0,0,0.8), 0 0 20px var(--accent);
             border-radius: 5px;
             padding: 50px;
-            /* ADDED PADDING BOTTOM TO PREVENT CONTROLS OVERLAP */
-            padding-bottom: 80px;
+            padding-bottom: 80px; /* Space for controls */
             
             display: none;
             position: relative;
             flex-direction: column;
             
-            /* ENABLE SCROLLING */
+            /* ALLOW SCROLLING */
             overflow-y: auto;
             
             animation: fadeIn 0.6s ease;
             backdrop-filter: blur(10px);
             z-index: 20;
         }
-        
-        /* CUSTOM SCROLLBAR FOR SLIDE */
+
+        /* Custom Scrollbar for Presentation */
         .slide::-webkit-scrollbar { width: 8px; }
         .slide::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
         .slide::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
@@ -514,18 +513,21 @@ function generateAndExport() {
 
                 if (activeTool === 'pen') {
                     ctx.globalCompositeOperation = 'source-over';
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
                     ctx.strokeStyle = penColor; 
                     ctx.lineWidth = 4;
                     ctx.shadowBlur = 0;
-                    ctx.globalAlpha = 1;
+                    ctx.globalAlpha = 1; // Pen is opaque
                 } else if (activeTool === 'marker') {
-                    // NEON HIGHLIGHTER MODE
-                    ctx.globalCompositeOperation = 'screen'; 
+                    // TRANSPARENT MARKER FIX
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.lineCap = 'square'; // Highlighter style
+                    ctx.lineJoin = 'round';
                     ctx.strokeStyle = markerColor; 
                     ctx.lineWidth = 25; 
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = markerColor;
-                    ctx.globalAlpha = 0.5;
+                    ctx.shadowBlur = 0; // NO GLOW (Prevents opacity buildup)
+                    ctx.globalAlpha = 0.009; // VERY LOW OPACITY (Prevents blocking text)
                 }
             } 
         });
