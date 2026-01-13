@@ -135,7 +135,7 @@ body {
     border: 1px solid var(--preview-accent);
     padding: 60px;
     color: var(--text-main);
-    overflow-y: auto;
+    overflow-y: auto; /* EDITOR SCROLL */
     border-radius: 2px;
     transition: background 0.3s, border-color 0.3s;
     box-shadow: 0 0 20px rgba(0,0,0,0.5);
